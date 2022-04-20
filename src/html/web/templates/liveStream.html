@@ -84,7 +84,45 @@
         </main>
     </div>
 </div>
+<style>
+    .imageBase{
+        text-align: center; /*让div内部文字居中*/
+        background-color: lightgray;
+        border-radius: 20px;
+        width: 60%;
+        height: 400px;
+        margin: auto;
+        /*position: absolute;*/
+        top: 500px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
 
+    .liveForm{
+        margin: auto;
+        margin-top: 20px;
+        width: 60%;
+        padding: 20px;
+    }
+
+    .liveFormInput{
+        height: calc(1.5em + .75rem + 2px);
+        padding: .375rem .75rem;
+        margin-bottom: 10px;
+        margin-right: 30px ;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        width: 45%;
+        color: #495057;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: .25rem;
+        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+</style>
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
@@ -101,7 +139,40 @@
 <script src="../static/js/liveStream.js"></script>
 <!-- Icons -->
 <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+<script>
+    // relative path to the sensor data for
+    // get/post:
+    var serverPath = "/sensor/:80";
 
+    // callback when the Web page has been loaded
+    $(document).ready(function() {
+        window.intervalId = setInterval(function() {
+            // callback for interval timer for every second
+            $.getJSON(serverPath,function(result){
+                var path = "data:image/jpg;base64,"+result.mat.replace(/[\r\n]/g,'');
+                $("#imageBase").html('<img src="'+path+'"/>');
+
+            });
+        }, 50);
+
+        $("#driver").click(function(event){
+            var coordinate_x1 = $("#coordinate_x1").val();
+            var coordinate_y1 = $("#coordinate_y1").val();
+            var coordinate_x2 = $("#coordinate_x2").val();
+            var coordinate_y2 = $("#coordinate_y2").val();
+            $.post(
+                serverPath,
+                {
+                    coordinate_x1: coordinate_x1,
+                    coordinate_y1: coordinate_y1,
+                    coordinate_x2: coordinate_x2,
+                    coordinate_y2: coordinate_y2
+                }
+            );
+
+        });
+    });
+</script>
 
 </body>
 
